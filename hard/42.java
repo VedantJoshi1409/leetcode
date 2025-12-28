@@ -1,38 +1,23 @@
-import java.util.*;
-
 class Solution {
     public int trap(int[] height) {
-        int first = 0;
-        while (height[first] == 0 && first < height.length-1) first++;
-        int last = height.length-1;
-        while (height[last] == 0 && last > 0) last--;
-        int trapped = 0;
-        int cur = first;
-        int next = first+1;
-        HashSet<Integer> submerged = new HashSet<>();
-        while (next <= last) {
-            if (height[cur] > height[next]) next++;
-            else {
-                trapped+= (next-cur-1)*height[cur];
-                for (int i = cur+1; i < next; i++) submerged.add(i);
-                cur = next;
-                next++;
+        int l = 0;
+        int r = height.length-1;
+        int trap = 0;
+        while (height[l] == 0 && l < height.length-1) l++;
+        while (height[r] == 0 && r > 0) r--;
+        int maxR = height[r];
+        int maxL = height[l];
+        while (l < r) {
+            if (height[l] < height[r]) {
+                l++;
+                maxL = Math.max(maxL, height[l]);
+                trap+=maxL-height[l];
+            } else {
+                r--;
+                maxR = Math.max(maxR, height[r]);
+                trap+=maxR-height[r];
             }
         }
-        cur = last;
-        next = cur-1;
-        while (next >= first) {
-            if (height[cur] >= height[next]) next--;
-            else {
-                trapped+= (cur-next-1)*height[cur];
-                for (int i = cur-1; i > next; i--) submerged.add(i);
-                cur = next;
-                next--;
-            }
-        }
-        for (int i : submerged) {
-            trapped-=height[i];
-        }
-        return trapped;
+        return trap;
     }
 }
